@@ -14,10 +14,22 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const allowed = [
+  "http://localhost:5173",
+  "https://carreleur-porfolio-frontend.vercel.app",
+];
 
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (!origin || allowed.includes(origin)) return cb(null, true);
+      return cb(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
 app.use("/uploads", express.static("uploads"));
 app.use(bodyParser.json());
-app.use(cors());
 
 /**
  * Fonction qui crée l'admin par défaut une seule fois
